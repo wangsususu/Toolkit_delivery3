@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Toolkit | Login</title>
+    <style>
+        :root {
+            --primary: #ABBBD1;
+            --light: #DCECED;
+            --cream: #FEFDF8;
+            --dark: #333;
+            --muted: #666;
+            --white: #fff;
+            --shadow: 0 10px 30px rgba(0, 0, 0, .08)
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: Segoe UI, Arial, sans-serif;
+            background: linear-gradient(135deg, var(--light), var(--cream));
+            min-height: 100vh;
+            color: var(--dark)
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            box-shadow: var(--shadow)
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: auto;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            text-decoration: none
+        }
+
+        .brand img {
+            height: 42px
+        }
+
+        .menu {
+            display: flex;
+            gap: 24px;
+            list-style: none
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            position: relative
+        }
+
+        .menu a:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -6px;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: .3s
+        }
+
+        .menu a:hover:after,
+        .active:after {
+            width: 100%
+        }
+
+        .wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 70px 20px
+        }
+
+        .card {
+            width: 100%;
+            max-width: 430px;
+            background: #fff;
+            padding: 34px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            animation: rise .8s ease
+        }
+
+        .icon {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 10px
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 24px
+        }
+
+        .field {
+            margin-bottom: 16px
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            transition: .3s
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            transform: translateY(-2px)
+        }
+
+        small {
+            display: block;
+            height: 18px;
+            color: #d33;
+            margin-top: 6px
+        }
+
+        .btn {
+            width: 100%;
+            border: none;
+            background: var(--primary);
+            color: #fff;
+            padding: 13px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .3s
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow)
+        }
+
+        .extra {
+            text-align: center;
+            margin-top: 16px
+        }
+
+        .extra a {
+            color: var(--dark)
+        }
+
+        .ok {
+            color: #0a8a3c;
+            text-align: center;
+            min-height: 20px;
+            margin-top: 10px
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(40px)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        @media(max-width:700px) {
+            .menu {
+                gap: 12px;
+                font-size: .9rem;
+                flex-wrap: wrap;
+                justify-content: center
+            }
+
+            .nav {
+                flex-direction: column;
+                gap: 10px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class='nav'><a href='toolkit_home.html' class='brand'><img
+                    src='Pencils_Tehnikum_logo-1.svg'><span>Toolkit</span></a>
+            <ul class='menu'>
+                <li><a href='toolkit_home.html'>Home</a></li>
+                <li><a href='search.html'>Search</a></li>
+                <!-- <li><a href='seller.html'>Seller</a></li> -->
+                <li><a href='registration.html'>Registration</a></li>
+                <li><a class='active' href='login.html'>Login</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class='wrap'>
+        <section class='card'>
+            <div class='icon'>🔐</div>
+            <h2 class='title'>Seller Login</h2>
+            <form id='loginForm' action="logincheck.php" method="POST">
+                <div class='field'><label>Username</label><input id='user' name="username"><small id='e1'></small></div>
+                <div class='field'><label>Password</label><input type='password' id='pass' name="password"><small
+                        id='e2'></small></div>
+                <button class='btn' type='submit'>Login</button>
+                <div class='ok' id='msg'></div>
+                <div class='extra'>No account? <a href='registration.html'>Create one</a></div>
+            </form>
+        </section>
+    </main>
+    <script>
+
+        const u = document.getElementById('user');
+        const p = document.getElementById('pass');
+
+        document.getElementById('loginForm')
+            .addEventListener('submit', e => {
+                document.getElementById('e1').textContent = '';
+                document.getElementById('e2').textContent = '';
+
+                let ok = true;
+
+                if (u.value.trim() === '') {
+                    document.getElementById('e1')
+                        .textContent = 'Enter username';
+
+                    ok = false;
+                }
+
+                if (p.value.trim() === '') {
+                    document.getElementById('e2')
+                        .textContent = 'Enter password';
+
+                    ok = false;
+                }
+
+                if (!ok) {
+                    e.preventDefault();
+                }
+            });
+
+    </script>
+</body>
+
+</html>
