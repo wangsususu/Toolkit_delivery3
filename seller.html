@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Center | Stationery Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reuse original theme color scheme and basic styles */
+        :root {
+            --primary-blue: #ABBBD1;    /* Primary blue */
+            --light-blue: #DCECED;       /* Light blue */
+            --cream: #FEFDF8;           /* Cream color */
+            --text-dark: #333333;       /* Dark gray text */
+            --text-light: #666666;      /* Light gray text */
+            --white: #FFFFFF;           /* White */
+            --border-color: #E0E0E0;   /* Border color */
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: var(--cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 24px;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: #94A8C4;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        /* Top bar */
+        .top-bar {
+            background-color: var(--white);
+            padding: 8px 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .top-bar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .top-links a {
+            margin-right: 20px;
+            color: var(--text-light);
+        }
+        
+        .top-links a:hover {
+            color: var(--primary-blue);
+        }
+        
+        .top-links a:last-child {
+            margin-right: 0;
+        }
+        
+        /* Navigation bar */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-img {
+            width: 60px; 
+            height: auto; 
+            object-fit: contain;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            font-weight: 600;
+            position: relative;
+            padding: 5px 0;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-blue);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-icons {
+            display: flex;
+            gap: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .nav-icons a {
+            color: var(--text-dark);
+        }
+        
+        .nav-icons a:hover {
+            color: var(--primary-blue);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+        
+        /* Seller center styles */
+        .seller-section {
+            padding: 60px 0;
+        }
+        
+        .seller-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .seller-title h2 {
+            font-size: 2.2rem;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+        
+        .seller-title p {
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .seller-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 30px;
+        }
+        
+        .seller-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px var(--shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .seller-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .seller-icon {
+            width: 80px;
+            height: 80px;
+            background-color: var(--light-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            color: var(--primary-blue);
+            font-size: 2.5rem;
+        }
+        
+        .seller-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+        
+        .seller-card p {
+            color: var(--text-light);
+            margin-bottom: 30px;
+            line-height: 1.7;
+        }
+        
+        .seller-note {
+            background-color: var(--light-blue);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 50px;
+            color: var(--text-dark);
+        }
+        
+        .seller-note h4 {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .seller-note h4 i {
+            color: var(--primary-blue);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #2C3E50;
+            color: var(--white);
+            padding: 60px 0 20px;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-col h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--light-blue);
+        }
+        
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-col ul li a:hover {
+            color: var(--light-blue);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icons a:hover {
+            background-color: var(--primary-blue);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .nav-links, .nav-icons {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .seller-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo-img {
+                width: 50px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .seller-card {
+                padding: 30px 20px;
+            }
+            
+            .logo-img {
+                width: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-links">
+                <a href="#"><i class="fas fa-phone"></i> 400-123-4567</a>
+                <a href="#"><i class="fas fa-envelope"></i> contact@stationery.com</a>
+            </div>
+            <div class="top-links">
+                <a href="#"><i class="fas fa-truck"></i> Free Shipping Over $99</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation bar -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="toolkit_home.html" class="logo">
+                    <img src="Pencils_Tehnikum_logo-1.svg" 
+                         alt="Logo" class="logo-img">
+                </a>
+                
+                <ul class="nav-links">
+                    <li><a href="toolkit_home.html">Home</a></li>
+                    <li><a href="search.html">Search</a></li>
+                    <!--<li><a href="seller.html" class="active">Seller</a></li> -->
+                    <li><a href="registration.html">Registration</a></li>
+                    <li><a href="login.html">Login</a></li>
+                </ul>
+                
+                <div class="nav-icons">
+                    <a href="#"><i class="fas fa-heart"></i></a>
+                    <a href="#"><i class="fas fa-shopping-cart"></i></a>
+                </div>
+                
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Seller center area -->
+    <section class="seller-section">
+        <div class="container">
+            <div class="seller-title">
+                <h2>Seller Center</h2>
+                <p>Manage your stationery store, publish product ads, expand sales channels</p>
+            </div>
+            
+            <div class="seller-cards">
+                <!-- Seller Registration -->
+                <div class="seller-card">
+                    <div class="seller-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h3>Seller Registration</h3>
+                    <p>Become a certified seller of Stationery Hub and start your stationery sales journey. Fill in store information and complete qualification verification.</p>
+                    <a href="registration.html" class="btn">Register Now</a>
+                </div>
+                
+                <!-- Seller Login -->
+                <div class="seller-card">
+                    <div class="seller-icon">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <h3>Seller Login</h3>
+                    <p>Log in to your seller account to manage products, view orders, handle after-sales service, all-in-one operating platform.</p>
+                    <a href="login.html" class="btn">Account Login</a>
+                </div>
+                
+                <!-- Add Stationery -->
+                <div class="seller-card">
+                    <div class="seller-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <h3>Add Stationery</h3>
+                    <p>Publish new stationery products, upload images, fill in details, set prices and stock, promote your products easily.</p>
+                    <a href="toolkit_add.html" class="btn btn-secondary">Add Product</a>
+                </div>
+            </div>
+            
+            <div class="seller-note">
+                <h4><i class="fas fa-info-circle"></i> Seller Guidelines</h4>
+                <p>1. All sellers must complete real-name authentication and store qualification review to ensure product quality and service level;<br>
+                   2. Published stationery must comply with platform regulations, counterfeit and shoddy products are prohibited;<br>
+                   3. The platform will provide store promotion and optimization suggestions based on sales data and user reviews;<br>
+                   4. For any questions, please contact seller support: seller@stationery.com.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>Stationery Hub</h3>
+                    <p>High-quality stationery store, combining creativity and practicality for you.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-weixin"></i></a>
+                        <a href="#"><i class="fab fa-weibo"></i></a>
+                        <a href="#"><i class="fab fa-qq"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="toolkit_home.html">Home</a></li>
+                        <li><a href="#">All Products</a></li>
+                        <li><a href="#">New Arrivals</a></li>
+                        <li><a href="#">Best Sellers</a></li>
+                        <li><a href="seller.html">Seller Center</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Customer Service</h3>
+                    <ul>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Shipping Policy</a></li>
+                        <li><a href="#">Return Policy</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Stationery Avenue, Haidian District, Beijing</li>
+                        <li><i class="fas fa-phone"></i> 400-123-4567</li>
+                        <li><i class="fas fa-envelope"></i> contact@stationery.com</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri 9:00-18:00</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2026 Stationery Hub. All Rights Reserved. | Jing ICP No.12345678</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            const navIcons = document.querySelector('.nav-icons');
+            
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.display = 'none';
+                navIcons.style.display = 'none';
+            } else {
+                navLinks.style.display = 'flex';
+                navIcons.style.display = 'flex';
+                navLinks.style.flexDirection = 'column';
+                navLinks.style.position = 'absolute';
+                navLinks.style.top = '100%';
+                navLinks.style.left = '0';
+                navLinks.style.width = '100%';
+                navLinks.style.backgroundColor = 'var(--white)';
+                navLinks.style.padding = '20px';
+                navLinks.style.boxShadow = '0 5px 10px rgba(0,0,0,0.1)';
+                
+                navIcons.style.position = 'absolute';
+                navIcons.style.top = 'calc(100% + 200px)';
+                navIcons.style.left = '0';
+                navIcons.style.width = '100%';
+                navIcons.style.justifyContent = 'center';
+                navIcons.style.backgroundColor = 'var(--white)';
+                navIcons.style.padding = '20px';
+            }
+        });
+
+        // Navigation link active state
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                document.querySelectorAll('.nav-links a').forEach(item => {
+                    item.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
