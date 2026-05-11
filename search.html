@@ -6,7 +6,6 @@
     <title>Stationery Search | Stationery Hub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 保留原有所有样式，新增加载状态样式 */
         :root {
             --primary-blue: #ABBBD1;    /* Primary blue */
             --light-blue: #DCECED;       /* Light blue */
@@ -319,7 +318,7 @@
             opacity: 0.7;
         }
 
-        /* 新增加载状态样式 */
+
         .loading {
             text-align: center;
             padding: 60px 0;
@@ -340,7 +339,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* 错误提示样式 */
         .error {
             text-align: center;
             padding: 60px 0;
@@ -591,7 +589,6 @@
     </footer>
 
 <script>
-    // 移动端菜单逻辑（不变）
     document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
         const navLinks = document.querySelector('.nav-links');
         const navIcons = document.querySelector('.nav-icons');
@@ -621,14 +618,13 @@
         }
     });
 
-    // 核心搜索逻辑（已适配你的后端接口）
     const searchForm = document.getElementById('searchForm');
     const resultsContainer = document.getElementById('resultsContainer');
     const resultsTitle = document.getElementById('resultsTitle');
-    // 这里必须写对！和你成功访问的地址一致
+
     const API_URL = 'http://localhost/toolkit/search_products.php';
 
-    // 显示加载状态
+
     function showLoading() {
         resultsContainer.innerHTML = `
             <div class="loading">
@@ -638,7 +634,7 @@
         `;
     }
 
-    // 显示错误提示
+
     function showError(message) {
         resultsContainer.innerHTML = `
             <div class="error">
@@ -648,7 +644,6 @@
         `;
     }
 
-    // 渲染搜索结果
     function renderResults(data) {
         resultsTitle.textContent = `Search Results (${data.count})`;
         resultsContainer.innerHTML = '';
@@ -680,7 +675,6 @@
         });
     }
 
-    // 表单提交事件
     searchForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         const keyword = document.getElementById('searchKeyword').value.trim();
@@ -689,7 +683,6 @@
         showLoading();
 
         try {
-            // 拼接GET参数，和你测试的格式一致
             const response = await fetch(`${API_URL}?keyword=${encodeURIComponent(keyword)}&category=${category}`);
             
             if (!response.ok) {
