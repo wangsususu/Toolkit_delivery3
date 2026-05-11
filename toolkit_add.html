@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Product — Toolkit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS (shared system)
+    ============================================================ */
+    :root {
+      --color-primary:    #ABBBD1;
+      --color-accent:     #DCECED;
+      --color-bg:         #FEFDF8;
+      --color-dark:       #1A1A1A;
+      --color-mid:        #555555;
+      --color-light:      #8A8A8A;
+      --color-border:     #DDD8CE;
+      --color-white:      #FFFFFF;
+      --color-ink:        #2C2C2C;
+      --color-hover-bg:   #EFF4F8;
+      --color-error:      #D64444;
+      --color-success:    #3C9E6A;
+
+      --font-display:     'DM Serif Display', serif;
+      --font-body:        'DM Sans', sans-serif;
+
+      --space-xs:  0.5rem;
+      --space-sm:  1rem;
+      --space-md:  2rem;
+      --space-lg:  4rem;
+
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 16px;
+
+      --shadow-soft: 0 2px 16px rgba(0,0,0,0.07);
+      --shadow-card: 0 4px 24px rgba(0,0,0,0.09);
+      --transition: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--color-bg);
+      color: var(--color-ink);
+      line-height: 1.65;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    .container {
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 clamp(1rem, 5vw, 3rem);
+    }
+
+    /* ============================================================
+       REUSABLE COMPONENTS
+    ============================================================ */
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 2rem;
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: 1.5px solid transparent;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .btn-primary {
+      background: var(--color-ink);
+      color: var(--color-white);
+      border-color: var(--color-ink);
+    }
+    .btn-primary:hover {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-ink);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(171,187,209,0.4);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--color-ink);
+      border-color: var(--color-border);
+    }
+    .btn-outline:hover { background: var(--color-accent); border-color: var(--color-primary); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--color-mid);
+      border-color: var(--color-border);
+    }
+    .btn-ghost:hover { background: var(--color-accent); border-color: var(--color-primary); color: var(--color-ink); }
+    .btn-danger {
+      background: transparent;
+      color: var(--color-error);
+      border-color: rgba(214,68,68,0.3);
+    }
+    .btn-danger:hover { background: rgba(214,68,68,0.08); }
+
+    /* Form control */
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--color-ink);
+      background: var(--color-white);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(171,187,209,0.22);
+    }
+    .form-control.invalid {
+      border-color: var(--color-error);
+      box-shadow: 0 0 0 3px rgba(214,68,68,0.1);
+    }
+    .form-control.valid {
+      border-color: var(--color-success);
+    }
+    textarea.form-control {
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.7;
+    }
+    select.form-control {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A8A8A' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+      cursor: pointer;
+    }
+
+    /* Label */
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-mid);
+      margin-bottom: 0.55rem;
+    }
+    .form-label .req { color: var(--color-error); margin-left: 2px; }
+
+    /* Field hint */
+    .form-hint {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--color-light);
+      margin-top: 0.4rem;
+    }
+
+    /* Field error */
+    .form-error {
+      display: none;
+      font-size: 0.76rem;
+      color: var(--color-error);
+      margin-top: 0.4rem;
+    }
+    .form-error.visible { display: block; }
+
+    /* Form group */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    /* Form row */
+    .form-row {
+      display: grid;
+      gap: 1.5rem;
+    }
+    .form-row-2 { grid-template-columns: 1fr 1fr; }
+    .form-row-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+    /* Card */
+    .card {
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 1.25rem 1.75rem;
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .card-header-icon {
+      width: 32px; height: 32px;
+      background: var(--color-accent);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-primary);
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .card-header h3 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--color-dark);
+    }
+    .card-header span { font-size: 0.78rem; color: var(--color-light); }
+    .card-body { padding: 1.75rem; }
+
+    /* ============================================================
+    /* ============================================================
+       NAVBAR  — unified with team style
+    ============================================================ */
+    header {
+      position: sticky;
+      top: 0;
+      background: var(--color-white);
+      box-shadow: var(--shadow-soft);
+      z-index: 200;
+    }
+    .nav {
+      max-width: 1200px;
+      margin: auto;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      text-decoration: none;
+    }
+    .brand img { height: 42px; }
+    .brand svg { height: 42px; width: 42px; }
+    .menu {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .menu a {
+      text-decoration: none;
+      color: var(--color-dark);
+      font-weight: 600;
+      font-size: 0.9rem;
+      position: relative;
+      padding-bottom: 4px;
+      transition: color var(--transition);
+    }
+    .menu a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 0;
+      height: 2px;
+      background: var(--color-primary);
+      transition: width 0.3s;
+    }
+    .menu a:hover::after,
+    .menu a.active::after { width: 100%; }
+    .menu a:hover { color: var(--color-primary); }
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--color-dark);
+      cursor: pointer;
+      padding: 4px;
+    }
+    .mobile-nav { display: none; flex-direction: column; background: var(--color-white); border-top: 1px solid var(--color-border); padding: 0.75rem 0; }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a { padding: 0.75rem 1.5rem; font-size: 0.9rem; font-weight: 600; color: var(--color-dark); text-decoration: none; transition: background var(--transition), color var(--transition); }
+    .mobile-nav a:hover { background: var(--color-accent); color: var(--color-primary); }
+    .mobile-nav a.active { color: var(--color-primary); }
+
+    /* ============================================================
+       PAGE HEADER
+    ============================================================ */
+    .page-header {
+      background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-primary) 100%);
+      padding: 3.5rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::after {
+      content: 'UPLOAD';
+      position: absolute;
+      right: -1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(5rem, 12vw, 9rem);
+      color: rgba(255,255,255,0.15);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      color: rgba(44,44,44,0.5);
+      margin-bottom: 1rem;
+    }
+    .breadcrumb a { color: rgba(44,44,44,0.5); transition: color var(--transition); }
+    .breadcrumb a:hover { color: var(--color-ink); }
+    .breadcrumb i { font-size: 0.6rem; }
+    .page-header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 400;
+      color: var(--color-dark);
+      line-height: 1.1;
+    }
+    .page-header h1 em { font-style: italic; color: var(--color-white); }
+    .page-header p { margin-top: 0.75rem; font-size: 0.92rem; color: var(--color-mid); max-width: 480px; }
+
+    /* ============================================================
+       MAIN LAYOUT
+    ============================================================ */
+    .upload-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 2rem;
+      padding: var(--space-lg) 0;
+      align-items: start;
+    }
+
+    /* ============================================================
+       IMAGE UPLOAD AREA
+    ============================================================ */
+    .image-upload-zone {
+      border: 2px dashed var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-bg);
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition);
+      position: relative;
+    }
+    .image-upload-zone:hover, .image-upload-zone.dragover {
+      border-color: var(--color-primary);
+      background: var(--color-accent);
+    }
+    .image-upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
+    .upload-icon {
+      width: 60px; height: 60px;
+      background: var(--color-accent);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.25rem;
+      color: var(--color-primary);
+      font-size: 1.4rem;
+      transition: all var(--transition);
+    }
+    .image-upload-zone:hover .upload-icon { background: var(--color-primary); color: var(--color-white); }
+    .upload-title { font-size: 0.95rem; font-weight: 500; color: var(--color-dark); margin-bottom: 0.35rem; }
+    .upload-sub { font-size: 0.8rem; color: var(--color-light); }
+    .upload-formats { margin-top: 1rem; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-border); }
+
+    .image-previews {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+    .preview-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      background: var(--color-accent);
+    }
+    .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .preview-remove {
+      position: absolute;
+      top: 0.3rem; right: 0.3rem;
+      width: 22px; height: 22px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: white;
+      font-size: 0.6rem;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity var(--transition);
+      border: none;
+    }
+    .preview-item:hover .preview-remove { opacity: 1; }
+    .preview-main-badge {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(171,187,209,0.9);
+      color: var(--color-ink);
+      text-align: center;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.25rem;
+    }
+
+    /* ============================================================
+       PRICE SECTION
+    ============================================================ */
+    .price-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .price-currency {
+      display: flex;
+      align-items: center;
+      background: var(--color-accent);
+      border: 1px solid var(--color-border);
+      border-right: none;
+      border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      color: var(--color-mid);
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+    .price-row .form-control {
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    /* ============================================================
+       SHIPPING OPTIONS
+    ============================================================ */
+    .radio-group { display: flex; flex-direction: column; gap: 0.75rem; }
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.9rem 1rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition);
+      background: var(--color-white);
+    }
+    .radio-option:hover { border-color: var(--color-primary); background: var(--color-hover-bg); }
+    .radio-option.selected { border-color: var(--color-primary); background: var(--color-accent); }
+    .radio-option input[type="radio"] { accent-color: var(--color-primary); width: 16px; height: 16px; flex-shrink: 0; cursor: pointer; }
+    .radio-label { font-size: 0.88rem; color: var(--color-ink); font-weight: 400; flex: 1; }
+    .radio-label small { display: block; font-size: 0.75rem; color: var(--color-light); margin-top: 0.1rem; }
+    .shipping-fee-input {
+      margin-top: 0.75rem;
+      display: none;
+    }
+    .shipping-fee-input.visible { display: flex; align-items: center; gap: 0; }
+
+    /* ============================================================
+       CHAR COUNTER
+    ============================================================ */
+    .char-counter {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 0.72rem;
+      color: var(--color-border);
+      margin-top: 0.35rem;
+      transition: color var(--transition);
+    }
+    .char-counter.warn { color: var(--color-error); }
+
+    /* ============================================================
+       SIDEBAR
+    ============================================================ */
+    .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    /* Preview card */
+    .preview-card {
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .preview-card-thumb {
+      height: 180px;
+      background: var(--color-accent);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-primary);
+      font-size: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .preview-card-body { padding: 1.25rem; }
+    .preview-brand { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-primary); margin-bottom: 0.3rem; }
+    .preview-name { font-size: 0.95rem; color: var(--color-dark); line-height: 1.4; margin-bottom: 0.75rem; font-weight: 400; }
+    .preview-price { font-size: 1.1rem; font-weight: 500; color: var(--color-dark); }
+
+    /* Checklist */
+    .checklist { display: flex; flex-direction: column; gap: 0.65rem; }
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.82rem;
+      color: var(--color-light);
+    }
+    .check-item.done { color: var(--color-dark); }
+    .check-dot {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--color-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.55rem;
+      color: transparent;
+      flex-shrink: 0;
+      transition: all var(--transition);
+    }
+    .check-item.done .check-dot {
+      background: var(--color-success);
+      border-color: var(--color-success);
+      color: white;
+    }
+
+    /* Tips */
+    .tip-item {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 0.82rem;
+    }
+    .tip-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .tip-icon {
+      width: 28px; height: 28px;
+      background: var(--color-accent);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-primary);
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+    .tip-text { color: var(--color-mid); line-height: 1.6; }
+    .tip-text strong { color: var(--color-dark); font-weight: 500; display: block; margin-bottom: 0.1rem; }
+
+    /* ============================================================
+       FORM ACTION BAR (sticky)
+    ============================================================ */
+    .form-action-bar {
+      position: sticky;
+      bottom: 0;
+      background: rgba(254,253,248,0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--color-border);
+      padding: 1rem 0;
+      z-index: 100;
+    }
+    .form-action-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .action-left { display: flex; align-items: center; gap: 0.5rem; }
+    .save-status { font-size: 0.78rem; color: var(--color-light); }
+    .save-status.saved { color: var(--color-success); }
+    .action-right { display: flex; gap: 0.75rem; }
+
+    /* ============================================================
+       TOAST NOTIFICATION
+    ============================================================ */
+    .toast {
+      position: fixed;
+      bottom: 5rem; right: 1.5rem;
+      background: var(--color-ink);
+      color: var(--color-white);
+      padding: 0.85rem 1.5rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      box-shadow: var(--shadow-card);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { background: var(--color-success); }
+    .toast.error { background: var(--color-error); }
+
+    /* ============================================================
+       MODAL
+    ============================================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition);
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      transform: scale(0.92);
+      transition: transform var(--transition);
+    }
+    .modal-overlay.open .modal { transform: scale(1); }
+    .modal-icon {
+      width: 64px; height: 64px;
+      background: var(--color-accent);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.25rem;
+      font-size: 1.5rem;
+      color: var(--color-primary);
+    }
+    .modal h3 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--color-dark);
+    }
+    .modal p { font-size: 0.88rem; color: var(--color-mid); margin-bottom: 1.75rem; line-height: 1.75; }
+    .modal-actions { display: flex; gap: 0.75rem; justify-content: center; }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1024px) {
+      .upload-layout { grid-template-columns: 1fr; }
+      .sidebar { display: grid; grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .menu { display: none; }
+      .menu-toggle { display: block; }
+      .form-row-2, .form-row-3 { grid-template-columns: 1fr; }
+      .sidebar { grid-template-columns: 1fr; }
+      .image-previews { grid-template-columns: repeat(3, 1fr); }
+      .action-right { width: 100%; }
+      .action-right .btn { flex: 1; justify-content: center; }
+    }
+    @media (max-width: 480px) {
+      .image-previews { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== NAVBAR ==================== -->
+  <header>
+    <nav class="nav">
+      <a href="toolkit_home.html" class="brand">
+        <img src="toolkit_logo.svg" alt="Toolkit Logo" width="42" height="42">
+        <span>Toolkit</span>
+      </a>
+      <ul class="menu" id="mainMenu">
+        <li><a href="toolkit_home.html">Home</a></li>
+        <li><a href="search.html">Search</a></li>
+        <!-- <li><a href="seller.html">Seller</a></li> -->
+        <li><a href="registration.html">Registration</a></li>
+        <li><a href="login.html">Login</a></li>
+      </ul>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
+      </button>
+    </nav>
+    <nav class="mobile-nav" id="mobileNav">
+      <a href="toolkit_home.html">Home</a>
+      <a href="search.html">Search</a>
+      <!-- <a href="seller.html">Seller</a> -->
+      <a href="registration.html">Registration</a>
+      <a href="login.html">Login</a>
+    </nav>
+  </header>
+
+  <!-- ==================== PAGE HEADER ==================== -->
+  <div class="page-header">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="toolkit_home.html">Home</a>
+        <i class="fas fa-chevron-right"></i>
+        <!-- <a href="seller.html">Seller Centre</a> -->
+        <i class="fas fa-chevron-right"></i>
+        <span>Upload Product</span>
+      </div>
+      <h1>Upload a <em>New</em><br>Product.</h1>
+      <p>Fill in the details below to list your stationery item on Toolkit. All fields marked <span style="color:var(--color-error);">*</span> are required.</p>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN FORM ==================== -->
+  <main>
+    <div class="container">
+      <form id="uploadForm" action="toolkit_add.php" method="POST" enctype="multipart/form-data">
+        <div class="upload-layout">
+          
+          <!-- LEFT: Main form area -->
+          <div class="form-main">
+
+            <!-- SECTION 1: Images -->
+            <div class="card" style="margin-bottom:1.5rem;">
+              <div class="card-header">
+                <div class="card-header-icon"><i class="fas fa-images"></i></div>
+                <div>
+                  <h3>Product Images</h3>
+                  <span>Up to 8 images. First image is the cover.</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="image-upload-zone" id="dropZone">
+                  <input type="file" id="imageInput" name="product_image" accept="image/jpeg,image/png,image/webp" />
+                  <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                  <div class="upload-title">Click to upload image</div>
+                  <div class="upload-sub">High quality photos sell faster</div>
+                  <div class="upload-formats">JPG · PNG · WEBP · Max 5MB each</div>
+                </div>
+                <div class="image-previews" id="imagePreviews"></div>
+                <span class="form-error" id="imageError">Please upload at least one product image.</span>
+                <!-- <div class="form-group" style="margin-top:1rem;">
+                  <label class="form-label" for="realProductImage">Product Image for Database</label>
+                  <input type="file" id="realProductImage" name="product_image" accept="image/jpeg,image/png,image/webp" class="form-control" />
+                  <span class="form-hint">Please select the same product image here for database upload.</span>
+                </div> -->
+              </div>
+            </div>
+
+            <!-- SECTION 2: Product Info -->
+            <div class="card" style="margin-bottom:1.5rem;">
+              <div class="card-header">
+                <div class="card-header-icon"><i class="fas fa-tag"></i></div>
+                <div><h3>Product Information</h3></div>
+              </div>
+              <div class="card-body">
+
+                <div class="form-group">
+                  <label class="form-label" for="productTitle">Product Title <span class="req">*</span></label>
+                  <input type="text" id="productTitle" name="title" class="form-control" placeholder="e.g. Pilot Hi-Tec-C Coleto Gel Pen 0.3mm — Black" maxlength="120" />
+                  <div class="char-counter" id="titleCounter">0 / 120</div>
+                  <span class="form-error" id="titleError">Please enter a product title.</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="productDesc">Description <span class="req">*</span></label>
+                  <textarea id="productDesc" name="description" class="form-control" placeholder="Describe your product in detail — materials, dimensions, colours, condition, what's included..." maxlength="2000"></textarea>
+                  <div class="char-counter" id="descCounter">0 / 2000</div>
+                  <span class="form-error" id="descError">Please enter a product description (min 20 characters).</span>
+                </div>
+
+                <div class="form-row form-row-3">
+                  <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label" for="productCategory">Category <span class="req">*</span></label>
+                    <select id="productCategory" name="category" class="form-control">
+                      <option value="">Select category</option>
+                      <option>Writing Instruments</option>
+                      <option>Notebooks & Journals</option>
+                      <option>Desk Organisation</option>
+                      <option>Art & Colour</option>
+                      <option>Notes & Memo</option>
+                      <option>Office Supplies</option>
+                      <option>Refills & Accessories</option>
+                      <option value="__new__">+ Add new category</option>
+                    </select>
+                    <input type="text" id="newCategory" name="new_category" class="form-control" placeholder="Enter new category name" style="margin-top:0.5rem; display:none;" />
+                    <span class="form-error" id="categoryError">Please select a category.</span>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label" for="productBrand">Brand <span class="req">*</span></label>
+                    <select id="productBrand" name="brand" class="form-control">
+                      <option value="">Select brand</option>
+                      <option>Pilot</option>
+                      <option>Uni-ball / Mitsubishi</option>
+                      <option>Faber-Castell</option>
+                      <option>Staedtler</option>
+                      <option>Stabilo</option>
+                      <option>Leuchtturm1917</option>
+                      <option>Moleskine</option>
+                      <option>Rhodia</option>
+                      <option>Sakura</option>
+                      <option>Pentel</option>
+                      <option>Zebra</option>
+                      <option>Muji</option>
+                      <option>Tombow</option>
+                      <option>LAMY</option>
+                      <option>Other / Independent</option>
+                    </select>
+                    <span class="form-error" id="brandError">Please select a brand.</span>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label" for="productModel">Model / SKU</label>
+                    <input type="text" id="productModel" name="model" class="form-control" placeholder="e.g. LHKSC-24C" />
+                    <span class="form-hint">Optional but recommended</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- SECTION 3: Pricing -->
+            <div class="card" style="margin-bottom:1.5rem;">
+              <div class="card-header">
+                <div class="card-header-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div><h3>Pricing</h3></div>
+              </div>
+              <div class="card-body">
+                <div class="form-row form-row-2">
+                  <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label" for="productPrice">Selling Price <span class="req">*</span></label>
+                    <div class="price-row">
+                      <div class="price-currency">$</div>
+                      <input type="number" id="productPrice" name="price" class="form-control" placeholder="0.00" min="0" step="0.01" />
+                    </div>
+                    <span class="form-error" id="priceError">Please enter a valid price (greater than 0).</span>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label" for="productOrigPrice">Original / Compare Price</label>
+                    <div class="price-row">
+                      <div class="price-currency">$</div>
+                      <input type="number" id="productOrigPrice" name="original_price" class="form-control" placeholder="0.00" min="0" step="0.01" />
+                    </div>
+                    <span class="form-hint">Leave blank if no discount to show</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 4: Shipping -->
+            <div class="card" style="margin-bottom:1.5rem;">
+              <div class="card-header">
+                <div class="card-header-icon"><i class="fas fa-shipping-fast"></i></div>
+                <div><h3>Shipping</h3></div>
+              </div>
+              <div class="card-body">
+                <label class="form-label">Shipping Option <span class="req">*</span></label>
+                <div class="radio-group">
+                  <label class="radio-option" id="freeShipOption">
+                    <input type="radio" name="shipping" value="free" id="shipFree" checked />
+                    <div class="radio-label">
+                      Free Shipping
+                      <small>You cover all shipping costs — great for attracting buyers</small>
+                    </div>
+                    <i class="fas fa-gift" style="color:var(--color-primary); font-size:0.9rem;"></i>
+                  </label>
+
+                  <label class="radio-option" id="paidShipOption">
+                    <input type="radio" name="shipping" value="paid" id="shipPaid" />
+                    <div class="radio-label">
+                      Fixed Shipping Fee
+                      <small>Set a flat fee — buyers will see it at checkout</small>
+                    </div>
+                    <i class="fas fa-truck" style="color:var(--color-light); font-size:0.9rem;"></i>
+                  </label>
+                </div>
+
+                <div class="shipping-fee-input" id="shippingFeeWrap">
+                  <div class="price-currency">$</div>
+                  <input type="number" id="shippingFee" name="shipping_fee" class="form-control" placeholder="0.00" min="0" step="0.01" style="border-radius:0 var(--radius-sm) var(--radius-sm) 0;" />
+                </div>
+                <span class="form-error" id="shippingFeeError">Please enter a shipping fee amount.</span>
+
+              </div>
+            </div>
+
+            <!-- SECTION 5: Additional Details -->
+            <div class="card" style="margin-bottom:1.5rem;">
+              <div class="card-header">
+                <div class="card-header-icon"><i class="fas fa-info-circle"></i></div>
+                <div><h3>Additional Details</h3></div>
+              </div>
+              <div class="card-body">
+                <div class="form-row form-row-2">
+                  <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label" for="productCondition">Condition <span class="req">*</span></label>
+                    <select id="productCondition" name="condition" class="form-control">
+                      <option value="">Select condition</option>
+                      <option>Brand New</option>
+                      <option>Like New (opened, unused)</option>
+                      <option>Good (minor signs of use)</option>
+                      <option>Used (visible wear)</option>
+                    </select>
+                    <span class="form-error" id="conditionError">Please select a condition.</span>
+                  </div>
+
+                  <div class="form-group" style="margin-bottom:0">
+                    <label class="form-label" for="productStock">Stock Quantity <span class="req">*</span></label>
+                    <input type="number" id="productStock" name="stock" class="form-control" placeholder="e.g. 10" min="1" step="1" />
+                    <span class="form-error" id="stockError">Please enter a valid stock quantity (min 1).</span>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-top:1.5rem; margin-bottom:0;">
+                  <label class="form-label" for="productTags">Tags</label>
+                  <input type="text" id="productTags" class="form-control" placeholder="e.g. gel pen, blue ink, fine tip — separate with commas" />
+                  <span class="form-hint">Tags help buyers discover your product through search</span>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /form-main -->
+
+          <!-- RIGHT: Sidebar -->
+          <aside class="sidebar">
+
+            <!-- Live Preview -->
+            <div class="preview-card">
+              <div class="preview-card-thumb" id="previewThumb">
+                <i class="fas fa-box-open" style="opacity:0.25;"></i>
+                <span style="position:absolute; bottom:0.75rem; left:0.75rem; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:rgba(44,44,44,0.4);">Preview</span>
+              </div>
+              <div class="preview-card-body">
+                <div class="preview-brand" id="previewBrand">Brand</div>
+                <div class="preview-name" id="previewName">Your product title will appear here</div>
+                <div class="preview-price" id="previewPrice">$—</div>
+              </div>
+            </div>
+
+            <!-- Completeness -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-header-icon"><i class="fas fa-tasks"></i></div>
+                <div><h3>Listing Completeness</h3></div>
+              </div>
+              <div class="card-body">
+                <div style="margin-bottom:1.25rem;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                    <span style="font-size:0.78rem; color:var(--color-mid);">Progress</span>
+                    <span style="font-size:0.78rem; font-weight:500; color:var(--color-dark);" id="progressPct">0%</span>
+                  </div>
+                  <div style="height:5px; background:var(--color-border); border-radius:100px; overflow:hidden;">
+                    <div id="progressBar" style="height:100%; background:var(--color-primary); border-radius:100px; width:0%; transition:width 0.4s ease;"></div>
+                  </div>
+                </div>
+                <div class="checklist" id="checklist">
+                  <div class="check-item" data-key="image">
+                    <div class="check-dot"><i class="fas fa-check"></i></div>
+                    <span>At least one image</span>
+                  </div>
+                  <div class="check-item" data-key="title">
+                    <div class="check-dot"><i class="fas fa-check"></i></div>
+                    <span>Product title</span>
+                  </div>
+                  <div class="check-item" data-key="desc">
+                    <div class="check-dot"><i class="fas fa-check"></i></div>
+                    <span>Description (20+ chars)</span>
+                  </div>
+                  <div class="check-item" data-key="category">
+                    <div class="check-dot"><i class="fas fa-check"></i></div>
+                    <span>Category selected</span>
+                  </div>
+                  <div class="check-item" data-key="brand">
+                    <div class="check-dot"><i class="fas fa-check"></i></div>
+                    <span>Brand selected</span>
+                  </div>
+                  <div class="check-item" data-key="price">
+                    <div class="check-dot"><i class="fas fa-check"></i></div>
+                    <span>Price set</span>
+                  </div>
+                  <div class="check-item" data-key="condition">
+                    <div class="check-dot"><i class="fas fa-check"></i></div>
+                    <span>Condition selected</span>
+                  </div>
+                  <div class="check-item" data-key="stock">
+                    <div class="check-dot"><i class="fas fa-check"></i></div>
+                    <span>Stock quantity</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tips -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-header-icon"><i class="fas fa-lightbulb"></i></div>
+                <div><h3>Listing Tips</h3></div>
+              </div>
+              <div class="card-body" style="padding-top:1.25rem;">
+                <div class="tip-item">
+                  <div class="tip-icon"><i class="fas fa-camera"></i></div>
+                  <div class="tip-text">
+                    <strong>Great photos sell</strong>
+                    Use a clean white or neutral background. Show multiple angles.
+                  </div>
+                </div>
+                <div class="tip-item">
+                  <div class="tip-icon"><i class="fas fa-pen"></i></div>
+                  <div class="tip-text">
+                    <strong>Detailed descriptions</strong>
+                    Include ink colour, tip size, paper weight, or other key specs buyers look for.
+                  </div>
+                </div>
+                <div class="tip-item">
+                  <div class="tip-icon"><i class="fas fa-tag"></i></div>
+                  <div class="tip-text">
+                    <strong>Competitive pricing</strong>
+                    Search similar products on Toolkit to benchmark your price.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </aside>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- ==================== STICKY ACTION BAR ==================== -->
+  <div class="form-action-bar">
+    <div class="container">
+      <div class="form-action-inner">
+        <div class="action-left">
+          <i class="fas fa-info-circle" style="color:var(--color-light); font-size:0.85rem;"></i>
+          <span class="save-status" id="saveStatus">Your draft will be saved automatically</span>
+        </div>
+        <div class="action-right">
+          <button type="button" class="btn btn-ghost" onclick="saveDraft()">
+            <i class="fas fa-save"></i> Save Draft
+          </button>
+          <button type="submit" form="uploadForm" class="btn btn-primary">
+            Publish Listing <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SUCCESS MODAL ==================== -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal">
+      <div class="modal-icon" style="background:#e8f7ef; color:var(--color-success);">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <h3>Listing Published!</h3>
+      <p>Your product has been successfully listed on Toolkit. Buyers can now discover and purchase it.</p>
+      <div class="modal-actions">
+        <a href="toolkit_home.html" class="btn btn-outline">Back to Home</a>
+        <button type="button" class="btn btn-primary" onclick="resetForm()">Add Another</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST ==================== -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ==================== SCRIPTS ==================== -->
+  <script>
+    /* -------- Mobile Menu -------- */
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileNav  = document.getElementById('mobileNav');
+    menuToggle.addEventListener('click', () => {
+      mobileNav.classList.toggle('open');
+      const icon = menuToggle.querySelector('i');
+      icon.classList.toggle('fa-bars');
+      icon.classList.toggle('fa-times');
+    });
+
+    /* -------- Toast -------- */
+    function showToast(msg, type = '') {
+      const t = document.getElementById('toast');
+      t.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${msg}`;
+      t.className = `toast ${type} show`;
+      setTimeout(() => { t.classList.remove('show'); }, 3200);
+    }
+
+    /* -------- Image Upload -------- */
+    const dropZone    = document.getElementById('dropZone');
+    const imageInput  = document.getElementById('imageInput');
+    const previewsEl  = document.getElementById('imagePreviews');
+    let uploadedImages = [];
+
+    // Drag & Drop visual feedback
+    // dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    // dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    // dropZone.addEventListener('drop', (e) => {
+    //   e.preventDefault();
+    //   dropZone.classList.remove('dragover');
+    //   handleFiles(e.dataTransfer.files);
+    // });
+
+    imageInput.addEventListener('change', () => handleFiles(imageInput.files));
+
+    function handleFiles(files) {
+      const MAX = 8;
+      Array.from(files).forEach(file => {
+        if (uploadedImages.length >= MAX) { showToast('Maximum 8 images allowed', 'error'); return; }
+        if (!file.type.startsWith('image/')) return;
+        if (file.size > 5 * 1024 * 1024) { showToast(`"${file.name}" exceeds 5MB`, 'error'); return; }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const id = Date.now() + Math.random();
+          uploadedImages.push({ id, src: e.target.result });
+          renderPreviews();
+          updateChecklist();
+          // Update preview thumb
+          document.getElementById('previewThumb').innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;" alt="preview">`;
+        };
+        reader.readAsDataURL(file);
+      });
+      // imageInput.value = '';
+    }
+
+    function renderPreviews() {
+      previewsEl.innerHTML = '';
+      uploadedImages.forEach((img, idx) => {
+        const item = document.createElement('div');
+        item.className = 'preview-item';
+        item.innerHTML = `
+          <img src="${img.src}" alt="Product image ${idx + 1}">
+          ${idx === 0 ? '<div class="preview-main-badge">Cover</div>' : ''}
+          <button class="preview-remove" onclick="removeImage('${img.id}')" title="Remove"><i class="fas fa-times"></i></button>
+        `;
+        previewsEl.appendChild(item);
+      });
+    }
+
+    function removeImage(id) {
+      uploadedImages = uploadedImages.filter(i => i.id != id);
+      renderPreviews();
+      if (uploadedImages.length === 0) {
+        document.getElementById('previewThumb').innerHTML = `<i class="fas fa-box-open" style="opacity:0.25;"></i><span style="position:absolute;bottom:0.75rem;left:0.75rem;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(44,44,44,0.4);">Preview</span>`;
+      } else {
+        document.getElementById('previewThumb').innerHTML = `<img src="${uploadedImages[0].src}" style="width:100%;height:100%;object-fit:cover;" alt="preview">`;
+      }
+      updateChecklist();
+    }
+
+    /* -------- Character Counters -------- */
+    function setupCounter(inputId, counterId, max) {
+      const input = document.getElementById(inputId);
+      const counter = document.getElementById(counterId);
+      input.addEventListener('input', () => {
+        const len = input.value.length;
+        counter.textContent = `${len} / ${max}`;
+        counter.classList.toggle('warn', len > max * 0.9);
+        updateChecklist();
+        updatePreview();
+      });
+    }
+    setupCounter('productTitle', 'titleCounter', 120);
+    setupCounter('productDesc', 'descCounter', 2000);
+
+    /* -------- Live Preview -------- */
+    function updatePreview() {
+      const title  = document.getElementById('productTitle').value || 'Your product title will appear here';
+      const brand  = document.getElementById('productBrand').value || 'Brand';
+      const price  = document.getElementById('productPrice').value;
+
+      document.getElementById('previewName').textContent  = title;
+      document.getElementById('previewBrand').textContent = brand !== '' ? brand : 'Brand';
+      document.getElementById('previewPrice').textContent = price > 0 ? `$${parseFloat(price).toFixed(2)}` : '$—';
+    }
+
+    document.getElementById('productTitle').addEventListener('input', updatePreview);
+    document.getElementById('productBrand').addEventListener('change', updatePreview);
+    document.getElementById('productPrice').addEventListener('input', updatePreview);
+
+    /* -------- Category: Add New -------- */
+    document.getElementById('productCategory').addEventListener('change', function () {
+      const newCatInput = document.getElementById('newCategory');
+      newCatInput.style.display = this.value === '__new__' ? 'block' : 'none';
+      updateChecklist();
+    });
+
+    /* -------- Shipping Toggle -------- */
+    document.querySelectorAll('input[name="shipping"]').forEach(radio => {
+      radio.addEventListener('change', function () {
+        const feeWrap = document.getElementById('shippingFeeWrap');
+        feeWrap.classList.toggle('visible', this.value === 'paid');
+
+        document.getElementById('freeShipOption').classList.toggle('selected', this.value === 'free');
+        document.getElementById('paidShipOption').classList.toggle('selected', this.value === 'paid');
+        document.getElementById('shippingFeeError').classList.remove('visible');
+      });
+    });
+    // Set initial selected state
+    document.getElementById('freeShipOption').classList.add('selected');
+
+    /* -------- Checklist & Progress -------- */
+    const checklistKeys = {
+      image:     () => uploadedImages.length > 0,
+      title:     () => document.getElementById('productTitle').value.trim().length >= 2,
+      desc:      () => document.getElementById('productDesc').value.trim().length >= 20,
+      category:  () => {
+                   const val = document.getElementById('productCategory').value;
+                   return val !== '' && val !== '__new__' || document.getElementById('newCategory').value.trim().length > 0;
+                 },
+      brand:     () => document.getElementById('productBrand').value !== '',
+      price:     () => parseFloat(document.getElementById('productPrice').value) > 0,
+      condition: () => document.getElementById('productCondition').value !== '',
+      stock:     () => parseInt(document.getElementById('productStock').value) >= 1,
+    };
+
+    function updateChecklist() {
+      let done = 0;
+      const total = Object.keys(checklistKeys).length;
+      document.querySelectorAll('#checklist .check-item').forEach(item => {
+        const key = item.dataset.key;
+        const isDone = checklistKeys[key]?.();
+        item.classList.toggle('done', !!isDone);
+        if (isDone) done++;
+      });
+      const pct = Math.round((done / total) * 100);
+      document.getElementById('progressPct').textContent = `${pct}%`;
+      document.getElementById('progressBar').style.width  = `${pct}%`;
+      document.getElementById('progressBar').style.background = pct === 100 ? 'var(--color-success)' : 'var(--color-primary)';
+    }
+
+    // Attach checklist update to relevant inputs
+    ['productDesc', 'productCategory', 'productBrand', 'productPrice', 'productCondition', 'productStock'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input',  updateChecklist);
+      document.getElementById(id)?.addEventListener('change', updateChecklist);
+    });
+
+    /* -------- Validation -------- */
+    function validateForm() {
+      let valid = true;
+
+      const showErr = (id, show) => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('visible', show);
+      };
+      const setValidity = (id, isValid) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.toggle('invalid', !isValid);
+        el.classList.toggle('valid', isValid);
+      };
+
+      // Images
+      const noImg = uploadedImages.length === 0;
+      showErr('imageError', noImg);
+      if (noImg) valid = false;
+
+      // Title
+      const titleVal = document.getElementById('productTitle').value.trim();
+      const titleOk = titleVal.length >= 2;
+      showErr('titleError', !titleOk);
+      setValidity('productTitle', titleOk);
+      if (!titleOk) valid = false;
+
+      // Description
+      const descVal = document.getElementById('productDesc').value.trim();
+      const descOk = descVal.length >= 20;
+      showErr('descError', !descOk);
+      setValidity('productDesc', descOk);
+      if (!descOk) valid = false;
+
+      // Category
+      const catVal = document.getElementById('productCategory').value;
+      const newCatVal = document.getElementById('newCategory').value.trim();
+      const catOk = (catVal !== '' && catVal !== '__new__') || newCatVal.length > 0;
+      showErr('categoryError', !catOk);
+      setValidity('productCategory', catOk);
+      if (!catOk) valid = false;
+
+      // Brand
+      const brandOk = document.getElementById('productBrand').value !== '';
+      showErr('brandError', !brandOk);
+      setValidity('productBrand', brandOk);
+      if (!brandOk) valid = false;
+
+      // Price
+      const priceVal = parseFloat(document.getElementById('productPrice').value);
+      const priceOk = !isNaN(priceVal) && priceVal > 0;
+      showErr('priceError', !priceOk);
+      setValidity('productPrice', priceOk);
+      if (!priceOk) valid = false;
+
+      // Shipping fee (if paid selected)
+      const shipMode = document.querySelector('input[name="shipping"]:checked')?.value;
+      if (shipMode === 'paid') {
+        const feeVal = parseFloat(document.getElementById('shippingFee').value);
+        const feeOk = !isNaN(feeVal) && feeVal >= 0;
+        showErr('shippingFeeError', !feeOk);
+        if (!feeOk) valid = false;
+      }
+
+      // Condition
+      const condOk = document.getElementById('productCondition').value !== '';
+      showErr('conditionError', !condOk);
+      setValidity('productCondition', condOk);
+      if (!condOk) valid = false;
+
+      // Stock
+      const stockVal = parseInt(document.getElementById('productStock').value);
+      const stockOk = !isNaN(stockVal) && stockVal >= 1;
+      showErr('stockError', !stockOk);
+      setValidity('productStock', stockOk);
+      if (!stockOk) valid = false;
+
+      return valid;
+    }
+
+    /* -------- Submit -------- */
+    function submitListing() {
+      if (!validateForm()) {
+        showToast('Please complete all required fields.', 'error');
+        // Scroll to first error
+        const firstErr = document.querySelector('.form-control.invalid');
+        firstErr?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      // Show success modal
+      document.getElementById('successModal').classList.add('open');
+    }
+
+    /* -------- Save Draft -------- */
+    function saveDraft() {
+      const statusEl = document.getElementById('saveStatus');
+      statusEl.textContent = 'Saving…';
+      setTimeout(() => {
+        statusEl.textContent = '✓ Draft saved';
+        statusEl.classList.add('saved');
+        showToast('Draft saved successfully', 'success');
+        setTimeout(() => {
+          statusEl.textContent = 'Your draft will be saved automatically';
+          statusEl.classList.remove('saved');
+        }, 4000);
+      }, 800);
+    }
+
+    /* -------- Auto-save on input -------- */
+    let autoSaveTimer;
+    document.getElementById('uploadForm').addEventListener('input', () => {
+      clearTimeout(autoSaveTimer);
+      autoSaveTimer = setTimeout(() => {
+        const statusEl = document.getElementById('saveStatus');
+        statusEl.textContent = '✓ Draft auto-saved';
+        statusEl.classList.add('saved');
+        setTimeout(() => {
+          statusEl.textContent = 'Your draft will be saved automatically';
+          statusEl.classList.remove('saved');
+        }, 2500);
+      }, 2000);
+    });
+
+    /* -------- Reset Form -------- */
+    function resetForm() {
+      document.getElementById('successModal').classList.remove('open');
+      document.getElementById('uploadForm').reset();
+      uploadedImages = [];
+      renderPreviews();
+      updatePreview();
+      updateChecklist();
+      document.getElementById('previewThumb').innerHTML = `<i class="fas fa-box-open" style="opacity:0.25;"></i><span style="position:absolute;bottom:0.75rem;left:0.75rem;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(44,44,44,0.4);">Preview</span>`;
+      document.getElementById('newCategory').style.display = 'none';
+      document.getElementById('shippingFeeWrap').classList.remove('visible');
+      document.getElementById('freeShipOption').classList.add('selected');
+      document.getElementById('paidShipOption').classList.remove('selected');
+      document.getElementById('titleCounter').textContent = '0 / 120';
+      document.getElementById('descCounter').textContent  = '0 / 2000';
+      document.querySelectorAll('.form-error.visible').forEach(e => e.classList.remove('visible'));
+      document.querySelectorAll('.form-control.invalid, .form-control.valid').forEach(e => {
+        e.classList.remove('invalid', 'valid');
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* -------- Close modal on overlay click -------- */
+    document.getElementById('successModal').addEventListener('click', function (e) {
+      if (e.target === this) this.classList.remove('open');
+    });
+    document.getElementById('uploadForm').addEventListener('submit', function (e) {
+      if (!validateForm()) {
+        e.preventDefault();
+        showToast('Please complete all required fields.', 'error');
+
+        const firstErr = document.querySelector('.form-control.invalid');
+        if (firstErr) {
+          firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    });
+
+    /* -------- Initial state -------- */
+    updateChecklist();
+    updatePreview();
+  </script>
+</body>
+</html>
