@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Toolkit — Minimal Stationery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS
+    ============================================================ */
+    :root {
+      --color-primary:    #ABBBD1;
+      --color-accent:     #DCECED;
+      --color-bg:         #FEFDF8;
+      --color-dark:       #1A1A1A;
+      --color-mid:        #555555;
+      --color-light:      #8A8A8A;
+      --color-border:     #DDD8CE;
+      --color-white:      #FFFFFF;
+      --color-ink:        #2C2C2C;
+      --color-hover-bg:   #EFF4F8;
+
+      --font-display:     'DM Serif Display', serif;
+      --font-body:        'DM Sans', sans-serif;
+
+      --space-xs:  0.5rem;
+      --space-sm:  1rem;
+      --space-md:  2rem;
+      --space-lg:  4rem;
+      --space-xl:  6rem;
+
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 16px;
+
+      --shadow-soft: 0 2px 16px rgba(0,0,0,0.07);
+      --shadow-card: 0 4px 24px rgba(0,0,0,0.09);
+      --transition: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ============================================================
+       RESET & BASE
+    ============================================================ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--color-bg);
+      color: var(--color-ink);
+      line-height: 1.65;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    img { display: block; max-width: 100%; }
+
+    .container {
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 clamp(1rem, 5vw, 3rem);
+    }
+
+    /* ============================================================
+       REUSABLE COMPONENTS
+    ============================================================ */
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 2rem;
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: 1.5px solid transparent;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .btn-primary {
+      background: var(--color-ink);
+      color: var(--color-white);
+      border-color: var(--color-ink);
+    }
+    .btn-primary:hover {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-ink);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(171,187,209,0.4);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--color-ink);
+      border-color: var(--color-ink);
+    }
+    .btn-outline:hover {
+      background: var(--color-ink);
+      color: var(--color-white);
+      transform: translateY(-1px);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--color-mid);
+      border-color: var(--color-border);
+    }
+    .btn-ghost:hover {
+      background: var(--color-accent);
+      border-color: var(--color-primary);
+      color: var(--color-ink);
+    }
+
+    /* Section title */
+    .section-header {
+      margin-bottom: var(--space-md);
+    }
+    .section-label {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      margin-bottom: 0.6rem;
+      border-bottom: 1.5px solid var(--color-primary);
+      padding-bottom: 2px;
+    }
+    .section-header h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      color: var(--color-dark);
+      line-height: 1.15;
+    }
+    .section-header p {
+      margin-top: 0.75rem;
+      color: var(--color-light);
+      font-size: 0.95rem;
+      max-width: 480px;
+    }
+
+    /* Card base */
+    .card {
+      background: var(--color-white);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-soft);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-card);
+    }
+
+    /* Form control base */
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--color-ink);
+      background: var(--color-bg);
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(171,187,209,0.25);
+    }
+
+    /* ============================================================
+       TOP UTILITY BAR
+    ============================================================ */
+    .topbar {
+      background: var(--color-accent);
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--color-mid);
+      padding: 0.55rem 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .topbar .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .topbar-links { display: flex; gap: 1.5rem; }
+    .topbar-links a { transition: color var(--transition); }
+    .topbar-links a:hover { color: var(--color-dark); }
+
+    /* ============================================================
+       NAVBAR  — unified with team style
+    ============================================================ */
+    header {
+      position: sticky;
+      top: 0;
+      background: var(--color-white);
+      box-shadow: var(--shadow-soft);
+      z-index: 200;
+    }
+    .nav {
+      max-width: 1200px;
+      margin: auto;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    /* Brand / Logo */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-dark);
+      text-decoration: none;
+    }
+    .brand img { height: 42px; }
+    .brand svg { height: 42px; width: 42px; }
+
+    /* Menu list */
+    .menu {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .menu a {
+      text-decoration: none;
+      color: var(--color-dark);
+      font-weight: 600;
+      font-size: 0.9rem;
+      position: relative;
+      padding-bottom: 4px;
+      transition: color var(--transition);
+    }
+    .menu a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 0;
+      height: 2px;
+      background: var(--color-primary);
+      transition: width 0.3s;
+    }
+    .menu a:hover::after,
+    .menu a.active::after { width: 100%; }
+    .menu a:hover { color: var(--color-primary); }
+
+    /* Hamburger toggle (mobile) */
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--color-dark);
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    /* Mobile nav drawer */
+    .mobile-nav {
+      display: none;
+      flex-direction: column;
+      background: var(--color-white);
+      border-top: 1px solid var(--color-border);
+      padding: 0.75rem 0;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--color-dark);
+      text-decoration: none;
+      transition: background var(--transition), color var(--transition);
+    }
+    .mobile-nav a:hover { background: var(--color-accent); color: var(--color-primary); }
+    .mobile-nav a.active { color: var(--color-primary); }
+
+    /* ============================================================
+       HERO
+    ============================================================ */
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      padding: var(--space-xl) 0 var(--space-xl) 0;
+      position: relative;
+      z-index: 2;
+    }
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .hero-eyebrow span {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      font-weight: 500;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 28px; height: 1.5px;
+      background: var(--color-primary);
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 1.07;
+      font-weight: 400;
+      color: var(--color-dark);
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 em { font-style: italic; color: var(--color-primary); }
+    .hero-desc {
+      font-size: 1rem;
+      color: var(--color-light);
+      line-height: 1.8;
+      max-width: 420px;
+      margin-bottom: 2.5rem;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-light);
+      z-index: 2;
+    }
+    .hero-scroll i { animation: bounce 1.8s infinite; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(5px); }
+    }
+
+    .hero-right {
+      position: relative;
+      height: 100%;
+      min-height: 92vh;
+      background: var(--color-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .hero-right::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-primary) 100%);
+      opacity: 0.5;
+    }
+    .hero-illustration {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    /* Floating product cards */
+    .hero-product-float {
+      background: rgba(254,253,248,0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: var(--radius-md);
+      padding: 1.2rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      min-width: 220px;
+      transition: transform var(--transition);
+    }
+    .hero-product-float:hover { transform: scale(1.03); }
+    .hero-product-float:nth-child(2) { margin-left: 3rem; }
+    .hero-product-float:nth-child(3) { margin-left: -2rem; }
+    .float-icon {
+      width: 52px; height: 52px;
+      background: var(--color-primary);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-white);
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .float-info { flex: 1; }
+    .float-name { font-size: 0.82rem; font-weight: 500; color: var(--color-ink); margin-bottom: 0.15rem; }
+    .float-price { font-size: 0.78rem; color: var(--color-primary); font-weight: 500; }
+
+    /* Decorative shapes */
+    .hero-shape {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.12;
+    }
+    .hero-shape-1 {
+      width: 360px; height: 360px;
+      background: var(--color-primary);
+      top: -80px; right: -80px;
+    }
+    .hero-shape-2 {
+      width: 180px; height: 180px;
+      background: var(--color-ink);
+      bottom: 60px; left: 40px;
+    }
+
+    /* ============================================================
+       ANNOUNCEMENT STRIP
+    ============================================================ */
+    .strip {
+      background: var(--color-ink);
+      color: var(--color-white);
+      overflow: hidden;
+      padding: 0.85rem 0;
+    }
+    .strip-track {
+      display: flex;
+      gap: 4rem;
+      animation: scroll-strip 22s linear infinite;
+      white-space: nowrap;
+    }
+    .strip-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .strip-item i { color: var(--color-primary); }
+    @keyframes scroll-strip {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ============================================================
+       CATEGORIES
+    ============================================================ */
+    .categories { padding: var(--space-xl) 0; }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .cat-card {
+      position: relative;
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 2.5rem 2rem;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .cat-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--color-primary);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform var(--transition);
+    }
+    .cat-card:hover { box-shadow: var(--shadow-card); border-color: var(--color-primary); }
+    .cat-card:hover::after { transform: scaleX(1); }
+    .cat-card:hover .cat-icon { background: var(--color-primary); color: var(--color-white); }
+
+    .cat-icon {
+      width: 52px; height: 52px;
+      background: var(--color-accent);
+      color: var(--color-primary);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      transition: all var(--transition);
+    }
+    .cat-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--color-dark);
+    }
+    .cat-card p {
+      font-size: 0.85rem;
+      color: var(--color-light);
+      line-height: 1.7;
+      flex: 1;
+    }
+    .cat-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      font-weight: 500;
+      transition: gap var(--transition);
+    }
+    .cat-card:hover .cat-link { gap: 0.75rem; }
+    .cat-card-large {
+      grid-column: span 1;
+      grid-row: span 2;
+      padding: 3rem 2.5rem;
+      background: linear-gradient(160deg, var(--color-accent) 0%, var(--color-primary) 100%);
+      border-color: transparent;
+      justify-content: flex-end;
+    }
+    .cat-card-large .cat-icon { background: rgba(255,255,255,0.4); color: var(--color-white); }
+    .cat-card-large h3, .cat-card-large p, .cat-card-large .cat-link { color: var(--color-white); }
+    .cat-card-large::after { background: var(--color-white); }
+
+    /* ============================================================
+       FEATURED PRODUCTS
+    ============================================================ */
+    .featured { padding: var(--space-xl) 0; background: var(--color-white); }
+
+    .featured-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: var(--space-md);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+
+    .product-card {
+      background: var(--color-bg);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+    .product-card:hover {
+      box-shadow: var(--shadow-card);
+      border-color: var(--color-primary);
+      transform: translateY(-4px);
+    }
+    .product-thumb {
+      height: 200px;
+      background: var(--color-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .product-thumb i { font-size: 3rem; color: var(--color-primary); opacity: 0.7; transition: all var(--transition); }
+    .product-card:hover .product-thumb i { opacity: 1; transform: scale(1.1); }
+    .product-thumb-tag {
+      position: absolute;
+      top: 0.75rem; left: 0.75rem;
+      background: var(--color-ink);
+      color: var(--color-white);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      border-radius: var(--radius-sm);
+    }
+    .product-thumb-tag.new { background: var(--color-primary); color: var(--color-ink); }
+    .product-wish {
+      position: absolute;
+      top: 0.75rem; right: 0.75rem;
+      width: 30px; height: 30px;
+      background: rgba(254,253,248,0.85);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: var(--color-light);
+      cursor: pointer;
+      transition: all var(--transition);
+      opacity: 0;
+    }
+    .product-card:hover .product-wish { opacity: 1; }
+    .product-wish:hover { color: #e54b4b; }
+
+    .product-body { padding: 1.25rem; }
+    .product-brand {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+    }
+    .product-name {
+      font-size: 0.92rem;
+      font-weight: 400;
+      color: var(--color-dark);
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
+    .product-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.75rem;
+    }
+    .product-price { font-size: 1rem; font-weight: 500; color: var(--color-dark); }
+    .product-price span { font-size: 0.75rem; font-weight: 300; color: var(--color-light); text-decoration: line-through; margin-left: 0.3rem; }
+    .add-cart {
+      width: 32px; height: 32px;
+      background: var(--color-accent);
+      border: none;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-primary);
+      cursor: pointer;
+      transition: all var(--transition);
+      font-size: 0.85rem;
+    }
+    .add-cart:hover { background: var(--color-primary); color: var(--color-white); }
+
+    /* ============================================================
+       VALUE PILLARS
+    ============================================================ */
+    .pillars { padding: var(--space-xl) 0; background: var(--color-bg); }
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+    .pillar {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-white);
+      transition: all var(--transition);
+    }
+    .pillar:hover { border-color: var(--color-primary); box-shadow: var(--shadow-soft); }
+    .pillar-icon {
+      width: 56px; height: 56px;
+      background: var(--color-accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.2rem;
+      font-size: 1.3rem;
+      color: var(--color-primary);
+      transition: all var(--transition);
+    }
+    .pillar:hover .pillar-icon { background: var(--color-primary); color: var(--color-white); }
+    .pillar h3 { font-size: 0.9rem; font-weight: 500; color: var(--color-dark); margin-bottom: 0.5rem; }
+    .pillar p { font-size: 0.82rem; color: var(--color-light); line-height: 1.65; }
+
+    /* ============================================================
+       ABOUT BANNER
+    ============================================================ */
+    .about { padding: var(--space-xl) 0; background: var(--color-accent); }
+    .about-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-lg);
+      align-items: center;
+    }
+    .about-visual {
+      background: linear-gradient(135deg, var(--color-primary) 0%, #90aac8 100%);
+      border-radius: var(--radius-lg);
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .about-visual i { font-size: 5rem; color: rgba(255,255,255,0.3); }
+    .about-visual::after {
+      content: 'TOOLKIT';
+      position: absolute;
+      bottom: 1.5rem; right: 1.5rem;
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.5);
+    }
+    .about-text h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--color-dark);
+      margin-bottom: 1.5rem;
+    }
+    .about-text p {
+      font-size: 0.93rem;
+      color: var(--color-mid);
+      margin-bottom: 1rem;
+      line-height: 1.9;
+    }
+    .about-stats {
+      display: flex;
+      gap: 2.5rem;
+      margin: 2rem 0;
+    }
+    .stat-val {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      color: var(--color-primary);
+      display: block;
+      line-height: 1;
+    }
+    .stat-label { font-size: 0.78rem; color: var(--color-light); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* ============================================================
+       NEWSLETTER
+    ============================================================ */
+    .newsletter {
+      padding: var(--space-lg) 0;
+      background: var(--color-ink);
+      text-align: center;
+    }
+    .newsletter h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 400;
+      color: var(--color-white);
+      margin-bottom: 0.75rem;
+    }
+    .newsletter h2 em { font-style: italic; color: var(--color-primary); }
+    .newsletter p { color: var(--color-light); font-size: 0.9rem; margin-bottom: 2rem; }
+    .newsletter-form {
+      display: flex;
+      max-width: 480px;
+      margin: 0 auto;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .newsletter-form input {
+      flex: 1;
+      background: rgba(255,255,255,0.07);
+      border: none;
+      padding: 0.85rem 1.25rem;
+      color: var(--color-white);
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+    }
+    .newsletter-form input::placeholder { color: rgba(255,255,255,0.3); }
+    .newsletter-form input:focus { outline: none; background: rgba(255,255,255,0.12); }
+    .newsletter-form button {
+      background: var(--color-primary);
+      border: none;
+      padding: 0.85rem 1.5rem;
+      color: var(--color-ink);
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background var(--transition);
+      flex-shrink: 0;
+    }
+    .newsletter-form button:hover { background: #91aac8; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    .footer {
+      background: #141414;
+      color: rgba(255,255,255,0.7);
+      padding: var(--space-xl) 0 var(--space-md);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .footer-brand p {
+      font-size: 0.85rem;
+      line-height: 1.8;
+      margin: 1.2rem 0 1.5rem;
+      color: rgba(255,255,255,0.45);
+    }
+    .footer-socials {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .footer-socials a {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.45);
+      transition: all var(--transition);
+    }
+    .footer-socials a:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .footer-col h4 {
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-white);
+      margin-bottom: 1.2rem;
+    }
+    .footer-col ul li { margin-bottom: 0.65rem; }
+    .footer-col ul li a { font-size: 0.83rem; color: rgba(255,255,255,0.45); transition: color var(--transition); }
+    .footer-col ul li a:hover { color: var(--color-primary); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: var(--space-md);
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.25);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-logo-text {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.3rem;
+      color: var(--color-primary);
+      display: block;
+      margin-top: 0.4rem;
+    }
+
+    /* ============================================================
+       PAGE LOAD ANIMATIONS
+    ============================================================ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .animate {
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards;
+    }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.22s; }
+    .delay-3 { animation-delay: 0.36s; }
+    .delay-4 { animation-delay: 0.5s; }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1024px) {
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+      .categories-grid { grid-template-columns: repeat(2, 1fr); }
+      .cat-card-large { grid-row: span 1; }
+      .pillars-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    }
+
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .hero-left { padding: var(--space-lg) 0; }
+      .menu { display: none; }
+      .menu-toggle { display: block; }
+      .about-inner { grid-template-columns: 1fr; }
+      .about-visual { display: none; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 576px) {
+      .products-grid { grid-template-columns: 1fr; }
+      .categories-grid { grid-template-columns: 1fr; }
+      .pillars-grid { grid-template-columns: 1fr; }
+      .topbar .container { justify-content: center; }
+      .topbar-links:first-child { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== TOP BAR ==================== -->
+  <div class="topbar">
+    <div class="container">
+      <div class="topbar-links">
+        <a href="tel:+1234567890"><i class="fas fa-phone"></i> +1 (234) 567-890</a>
+        <a href="mailto:hello@toolkit.store"><i class="fas fa-envelope"></i> hello@toolkit.store</a>
+      </div>
+      <div class="topbar-links">
+        <a href="#"><i class="fas fa-truck"></i> Free shipping on orders over $49</a>
+        <a href="registration.html"><i class="fas fa-user"></i> Sign In / Register</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== NAVBAR ==================== -->
+  <header>
+    <nav class="nav">
+      <a href="toolkit_home.html" class="brand">
+        <img src="toolkit_logo.svg" alt="Toolkit Logo" width="42" height="42">
+        <span>Toolkit</span>
+      </a>
+      <ul class="menu" id="mainMenu">
+        <li><a class="active" href="toolkit_home.html">Home</a></li>
+        <li><a href="search.html">Search</a></li>
+        <!-- <li><a href="seller.html">Seller</a></li> -->
+        <li><a href="registration.html">Registration</a></li>
+        <li><a href="login.html">Login</a></li>
+      </ul>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
+      </button>
+    </nav>
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+      <a class="active" href="toolkit_home.html">Home</a>
+      <a href="search.html">Search</a>
+      <!-- <a href="seller.html">Seller</a> -->
+      <a href="registration.html">Registration</a>
+      <a href="login.html">Login</a>
+    </nav>
+  </header>
+
+  <!-- ==================== HERO ==================== -->
+  <section class="hero">
+    <div class="container" style="display:contents;">
+      <div class="hero-left container animate delay-1">
+        <div class="hero-eyebrow">
+          <span>Minimal Stationery</span>
+        </div>
+        <h1>
+          Tools for<br>
+          <em>Thinking</em><br>
+          Beautifully.
+        </h1>
+        <p class="hero-desc">
+          Toolkit curates purposeful stationery — from precision writing instruments to thoughtfully designed notebooks — for those who believe the right tools sharpen the mind.
+        </p>
+        <div class="hero-actions">
+          <a href="#" class="btn btn-primary">Shop Collection <i class="fas fa-arrow-right"></i></a>
+          <a href="toolkit_add.html" class="btn btn-ghost">List a Product</a>
+        </div>
+        <div class="hero-scroll">
+          <i class="fas fa-chevron-down"></i>
+          <span>Scroll to explore</span>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="hero-shape hero-shape-1"></div>
+        <div class="hero-shape hero-shape-2"></div>
+        <div class="hero-illustration animate delay-2">
+          <div class="hero-product-float">
+            <div class="float-icon"><i class="fas fa-pen-nib"></i></div>
+            <div class="float-info">
+              <div class="float-name">Pro Gel Ink Pen</div>
+              <div class="float-price">$12.00</div>
+            </div>
+          </div>
+          <div class="hero-product-float">
+            <div class="float-icon"><i class="fas fa-book-open"></i></div>
+            <div class="float-info">
+              <div class="float-name">Linen Notebook A5</div>
+              <div class="float-price">$24.00</div>
+            </div>
+          </div>
+          <div class="hero-product-float">
+            <div class="float-icon"><i class="fas fa-highlighter"></i></div>
+            <div class="float-info">
+              <div class="float-name">Pastel Marker Set</div>
+              <div class="float-price">$18.50</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== STRIP ==================== -->
+  <div class="strip" aria-hidden="true">
+    <div class="strip-track">
+      <span class="strip-item"><i class="fas fa-star"></i> Free Shipping Over $49</span>
+      <span class="strip-item"><i class="fas fa-undo"></i> 30-Day Easy Returns</span>
+      <span class="strip-item"><i class="fas fa-leaf"></i> Eco-Friendly Packaging</span>
+      <span class="strip-item"><i class="fas fa-certificate"></i> Curated Quality Only</span>
+      <span class="strip-item"><i class="fas fa-lock"></i> Secure Checkout</span>
+      <!-- duplicate for seamless loop -->
+      <span class="strip-item"><i class="fas fa-star"></i> Free Shipping Over $49</span>
+      <span class="strip-item"><i class="fas fa-undo"></i> 30-Day Easy Returns</span>
+      <span class="strip-item"><i class="fas fa-leaf"></i> Eco-Friendly Packaging</span>
+      <span class="strip-item"><i class="fas fa-certificate"></i> Curated Quality Only</span>
+      <span class="strip-item"><i class="fas fa-lock"></i> Secure Checkout</span>
+    </div>
+  </div>
+
+  <!-- ==================== CATEGORIES ==================== -->
+  <section class="categories">
+    <div class="container">
+      <div class="section-header animate">
+        <span class="section-label">Browse by Category</span>
+        <h2>Find Your<br>Perfect Tool.</h2>
+        <p>Everything a thoughtful writer, student, or creator could need — curated with intention.</p>
+      </div>
+
+      <div class="categories-grid">
+        <!-- Large feature card -->
+        <div class="cat-card cat-card-large animate delay-1">
+          <div class="cat-icon"><i class="fas fa-pen-fancy"></i></div>
+          <div>
+            <h3>Writing Instruments</h3>
+            <p>Gel pens, fountain pens, mechanical pencils, ballpoints, and fineliners — each chosen for their smooth, dependable performance.</p>
+            <a href="#" class="cat-link">Explore <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+
+        <div class="cat-card animate delay-1">
+          <div class="cat-icon"><i class="fas fa-book"></i></div>
+          <h3>Notebooks</h3>
+          <p>Lined, dotted, blank, or grid — find your ideal page to fill.</p>
+          <a href="#" class="cat-link">Browse <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="cat-card animate delay-2">
+          <div class="cat-icon"><i class="fas fa-archive"></i></div>
+          <h3>Desk Organisation</h3>
+          <p>Pen holders, file trays, magazine boxes, and more to keep your space serene.</p>
+          <a href="#" class="cat-link">Browse <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="cat-card animate delay-2">
+          <div class="cat-icon"><i class="fas fa-palette"></i></div>
+          <h3>Art & Colour</h3>
+          <p>Watercolours, brush pens, coloured pencils, and creative accessories for every artist.</p>
+          <a href="#" class="cat-link">Browse <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="cat-card animate delay-3">
+          <div class="cat-icon"><i class="fas fa-sticky-note"></i></div>
+          <h3>Notes & Memo</h3>
+          <p>Sticky notes, index cards, and washi tapes to decorate, mark, and annotate.</p>
+          <a href="#" class="cat-link">Browse <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FEATURED PRODUCTS ==================== -->
+  <section class="featured">
+    <div class="container">
+      <div class="featured-header">
+        <div class="section-header animate" style="margin-bottom:0;">
+          <span class="section-label">New & Trending</span>
+          <h2>Editor's Picks.</h2>
+        </div>
+        <a href="#" class="btn btn-ghost">View All Products <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <div class="products-grid">
+        <!-- Product 1 -->
+        <div class="product-card animate delay-1">
+          <div class="product-thumb">
+            <span class="product-thumb-tag new">New</span>
+            <span class="product-wish"><i class="far fa-heart"></i></span>
+            <i class="fas fa-pen-nib"></i>
+          </div>
+          <div class="product-body">
+            <div class="product-brand">Pilot</div>
+            <div class="product-name">Hi-Tec-C Coleto Gel Pen 0.3mm</div>
+            <div class="product-footer">
+              <div class="product-price">$9.90 <span>$12.00</span></div>
+              <button class="add-cart" title="Add to cart"><i class="fas fa-plus"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="product-card animate delay-2">
+          <div class="product-thumb">
+            <span class="product-thumb-tag">Bestseller</span>
+            <span class="product-wish"><i class="far fa-heart"></i></span>
+            <i class="fas fa-book-open"></i>
+          </div>
+          <div class="product-body">
+            <div class="product-brand">Leuchtturm1917</div>
+            <div class="product-name">Medium A5 Dotted Notebook — Powder</div>
+            <div class="product-footer">
+              <div class="product-price">$22.00</div>
+              <button class="add-cart" title="Add to cart"><i class="fas fa-plus"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 3 -->
+        <div class="product-card animate delay-3">
+          <div class="product-thumb">
+            <span class="product-wish"><i class="far fa-heart"></i></span>
+            <i class="fas fa-highlighter"></i>
+          </div>
+          <div class="product-body">
+            <div class="product-brand">Stabilo</div>
+            <div class="product-name">Boss Original Highlighter Set (8 cols)</div>
+            <div class="product-footer">
+              <div class="product-price">$14.50</div>
+              <button class="add-cart" title="Add to cart"><i class="fas fa-plus"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 4 -->
+        <div class="product-card animate delay-4">
+          <div class="product-thumb">
+            <span class="product-thumb-tag new">New</span>
+            <span class="product-wish"><i class="far fa-heart"></i></span>
+            <i class="fas fa-pencil-alt"></i>
+          </div>
+          <div class="product-body">
+            <div class="product-brand">Faber-Castell</div>
+            <div class="product-name">Polychromos Colour Pencil Set 24</div>
+            <div class="product-footer">
+              <div class="product-price">$38.00 <span>$44.00</span></div>
+              <button class="add-cart" title="Add to cart"><i class="fas fa-plus"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== VALUE PILLARS ==================== -->
+  <section class="pillars">
+    <div class="container">
+      <div class="section-header animate" style="text-align:center; max-width:560px; margin:0 auto var(--space-md);">
+        <span class="section-label">Why Toolkit</span>
+        <h2>Designed with Purpose.</h2>
+      </div>
+
+      <div class="pillars-grid">
+        <div class="pillar animate delay-1">
+          <div class="pillar-icon"><i class="fas fa-medal"></i></div>
+          <h3>Curated Quality</h3>
+          <p>Every product passes our hands-on quality check before it's listed. No compromises.</p>
+        </div>
+        <div class="pillar animate delay-2">
+          <div class="pillar-icon"><i class="fas fa-leaf"></i></div>
+          <h3>Eco Packaging</h3>
+          <p>Recyclable materials and minimal plastic across all of our packaging and shipping.</p>
+        </div>
+        <div class="pillar animate delay-3">
+          <div class="pillar-icon"><i class="fas fa-shipping-fast"></i></div>
+          <h3>Fast Delivery</h3>
+          <p>Orders dispatched within 24 hours. Free shipping for all orders over $49.</p>
+        </div>
+        <div class="pillar animate delay-4">
+          <div class="pillar-icon"><i class="fas fa-headset"></i></div>
+          <h3>Expert Support</h3>
+          <p>Stationery lovers helping stationery lovers — real humans, always on hand.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== ABOUT ==================== -->
+  <section class="about">
+    <div class="container">
+      <div class="about-inner">
+        <div class="about-visual animate">
+          <i class="fas fa-pen-fancy"></i>
+        </div>
+        <div class="about-text animate delay-2">
+          <div class="section-label">Our Story</div>
+          <h2>More Than Just Stationery.</h2>
+          <p>Toolkit was founded on a simple belief: the objects you use every day shape how you think and work. We set out to find stationery that does more than function — tools that inspire.</p>
+          <p>From Hainan to the world, we partner with independent makers and established brands alike to bring you a carefully edited selection of writing tools, notebooks, and desk accessories that are worth owning.</p>
+          <div class="about-stats">
+            <div>
+              <span class="stat-val">200+</span>
+              <span class="stat-label">Curated Products</span>
+            </div>
+            <div>
+              <span class="stat-val">40+</span>
+              <span class="stat-label">Partner Brands</span>
+            </div>
+            <div>
+              <span class="stat-val">8k+</span>
+              <span class="stat-label">Happy Customers</span>
+            </div>
+          </div>
+          <a href="#" class="btn btn-primary">Our Philosophy</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== NEWSLETTER ==================== -->
+  <section class="newsletter">
+    <div class="container">
+      <h2>Stay in the <em>loop.</em></h2>
+      <p>Get the latest arrivals, editorial features, and exclusive offers straight to your inbox.</p>
+      <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+        <input type="email" placeholder="Your email address" id="nlEmail" required />
+        <button type="submit">Subscribe</button>
+      </form>
+      <p style="margin-top:1rem; font-size:0.75rem; color:rgba(255,255,255,0.2);">No spam. Unsubscribe any time.</p>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <!-- Brand col -->
+        <div class="footer-brand">
+          <div>
+            <span style="font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.3);">Minimal Stationery</span>
+            <span class="footer-logo-text">toolkit</span>
+          </div>
+          <p>A curated stationery shop for those who appreciate the craft of writing and the beauty of well-designed objects.</p>
+          <div class="footer-socials">
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Pinterest"><i class="fab fa-pinterest"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          </div>
+        </div>
+
+        <!-- Shop col -->
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="#">All Products</a></li>
+            <li><a href="#">Writing Instruments</a></li>
+            <li><a href="#">Notebooks</a></li>
+            <li><a href="#">Organisation</a></li>
+            <li><a href="#">New Arrivals</a></li>
+            <li><a href="#">Sale</a></li>
+          </ul>
+        </div>
+
+        <!-- Help col -->
+        <div class="footer-col">
+          <h4>Help</h4>
+          <ul>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Returns & Exchanges</a></li>
+            <li><a href="#">Track Order</a></li>
+            <li><a href="#">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <!-- Seller col -->
+        <div class="footer-col">
+          <h4>Sellers</h4>
+          <ul>
+            <li><a href="seller.html">Seller Centre</a></li>
+            <li><a href="registration.html">Register</a></li>
+            <li><a href="login.html">Login</a></li>
+            <li><a href="toolkit_add.html">Add Product</a></li>
+            <li><a href="#">Seller Guidelines</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Toolkit Stationery. All rights reserved.</p>
+        <p><a href="#" style="color:inherit;">Privacy Policy</a> · <a href="#" style="color:inherit;">Terms of Service</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== SCRIPTS ==================== -->
+  <script>
+    /* ---- Mobile Menu Toggle ---- */
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileNav  = document.getElementById('mobileNav');
+    menuToggle.addEventListener('click', () => {
+      mobileNav.classList.toggle('open');
+      const icon = menuToggle.querySelector('i');
+      icon.classList.toggle('fa-bars');
+      icon.classList.toggle('fa-times');
+    });
+
+    /* ---- Newsletter ---- */
+    function handleNewsletter(e) {
+      e.preventDefault();
+      const email = document.getElementById('nlEmail').value;
+      if (email) {
+        const btn = e.target.querySelector('button');
+        btn.textContent = '✓ Subscribed!';
+        btn.style.background = '#4caf7d';
+        btn.style.color = '#fff';
+        setTimeout(() => {
+          btn.textContent = 'Subscribe';
+          btn.style.background = '';
+          btn.style.color = '';
+          e.target.reset();
+        }, 3000);
+      }
+    }
+
+    /* ---- Add to Cart feedback ---- */
+    document.querySelectorAll('.add-cart').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const orig = this.innerHTML;
+        this.innerHTML = '<i class="fas fa-check"></i>';
+        this.style.background = 'var(--color-primary)';
+        this.style.color = '#fff';
+        setTimeout(() => {
+          this.innerHTML = orig;
+          this.style.background = '';
+          this.style.color = '';
+        }, 1200);
+      });
+    });
+
+    /* ---- Scroll-triggered animations ---- */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = 'running';
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.animate').forEach(el => {
+      el.style.animationPlayState = 'paused';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
