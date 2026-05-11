@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stationery Search | Stationery Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #ABBBD1;    /* Primary blue */
+            --light-blue: #DCECED;       /* Light blue */
+            --cream: #FEFDF8;           /* Cream color */
+            --text-dark: #333333;       /* Dark gray text */
+            --text-light: #666666;      /* Light gray text */
+            --white: #FFFFFF;           /* White */
+            --border-color: #E0E0E0;   /* Border color */
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: var(--cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 24px;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: #94A8C4;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        /* Top bar */
+        .top-bar {
+            background-color: var(--white);
+            padding: 8px 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .top-bar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .top-links a {
+            margin-right: 20px;
+            color: var(--text-light);
+        }
+        
+        .top-links a:hover {
+            color: var(--primary-blue);
+        }
+        
+        .top-links a:last-child {
+            margin-right: 0;
+        }
+        
+        /* Navigation bar */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-img {
+            width: 60px; 
+            height: auto; 
+            object-fit: contain;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            font-weight: 600;
+            position: relative;
+            padding: 5px 0;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-blue);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-icons {
+            display: flex;
+            gap: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .nav-icons a {
+            color: var(--text-dark);
+        }
+        
+        .nav-icons a:hover {
+            color: var(--primary-blue);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+        
+        /* Search section styles */
+        .search-section {
+            padding: 60px 0;
+            background-color: var(--white);
+            margin: 30px 0;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        .search-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .search-title h2 {
+            font-size: 2rem;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+        
+        .search-title p {
+            color: var(--text-light);
+        }
+        
+        .search-form {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        
+        .search-input {
+            flex: 1;
+            max-width: 500px;
+            padding: 12px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            color: var(--text-dark);
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+        
+        .category-select {
+            padding: 12px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            color: var(--text-dark);
+            background-color: var(--white);
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        
+        .category-select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+        
+        /* Search results area */
+        .search-results {
+            padding: 40px 0;
+        }
+        
+        .results-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .result-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px var(--shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .result-img {
+            height: 180px;
+            background-color: var(--light-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-blue);
+            font-size: 2.5rem;
+        }
+        
+        .result-info {
+            padding: 20px;
+        }
+        
+        .result-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        
+        .result-info p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .result-price {
+            font-weight: 700;
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 0;
+            color: var(--text-light);
+            font-size: 1.2rem;
+        }
+        
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+            opacity: 0.7;
+        }
+
+
+        .loading {
+            text-align: center;
+            padding: 60px 0;
+            color: var(--text-light);
+            font-size: 1.2rem;
+        }
+
+        .loading i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+            opacity: 0.7;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            text-align: center;
+            padding: 60px 0;
+            color: #e74c3c;
+            font-size: 1.2rem;
+        }
+
+        .error i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #2C3E50;
+            color: var(--white);
+            padding: 60px 0 20px;
+            margin-top: 60px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-col h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--light-blue);
+        }
+        
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-col ul li a:hover {
+            color: var(--light-blue);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icons a:hover {
+            background-color: var(--primary-blue);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .nav-links, .nav-icons {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .search-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-input, .category-select {
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            .logo-img {
+                width: 50px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo-img {
+                width: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-links">
+                <a href="#"><i class="fas fa-phone"></i> 400-123-4567</a>
+                <a href="#"><i class="fas fa-envelope"></i> contact@stationery.com</a>
+            </div>
+            <div class="top-links">
+                <a href="#"><i class="fas fa-truck"></i> Free Shipping Over $99</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation bar -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="toolkit_home.html" class="logo">
+                    <img src="Pencils_Tehnikum_logo-1.svg" 
+                         alt="Logo" class="logo-img">
+                </a>
+                
+                <ul class="nav-links">
+                    <li><a href="toolkit_home.html">Home</a></li>
+                    <li><a href="search.html" class="active">Search</a></li>
+                    <!--<li><a href="seller.html">Seller</a></li> -->
+                    <li><a href="registration.html">Registration</a></li>
+                    <li><a href="login.html">Login</a></li>
+                </ul>
+                
+                <div class="nav-icons">
+                    <a href="#"><i class="fas fa-heart"></i></a>
+                    <a href="#"><i class="fas fa-shopping-cart"></i></a>
+                </div>
+                
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Search area -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-title">
+                <h2>Stationery Search</h2>
+                <p>Find the stationery you need by category or keyword</p>
+            </div>
+            
+            <form class="search-form" id="searchForm">
+                <input type="text" class="search-input" placeholder="Enter keywords (e.g.: gel pen, notebook)" id="searchKeyword">
+                <select class="category-select" id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="writing">Writing Tools</option>
+                    <option value="paper">Paper & Notebooks</option>
+                    <option value="storage">Storage & Organization</option>
+                    <option value="office">Office Supplies</option>
+                    <option value="accessories">Refills & Accessories</option>
+                    <option value="creative">Creative & Art</option>
+                </select>
+                <button type="submit" class="btn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Search results area -->
+    <section class="search-results">
+        <div class="container">
+            <h3 class="results-title" id="resultsTitle">Search Results</h3>
+            <div class="results-grid" id="resultsContainer">
+                <!-- Initial no results prompt -->
+                <div class="no-results" id="noResults">
+                    <i class="fas fa-box-open"></i>
+                    <p>Enter keywords and select a category to start searching</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>Stationery Hub</h3>
+                    <p>High-quality stationery store, combining creativity and practicality for you.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-weixin"></i></a>
+                        <a href="#"><i class="fab fa-weibo"></i></a>
+                        <a href="#"><i class="fab fa-qq"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="toolkit_home.html">Home</a></li>
+                        <li><a href="#">All Products</a></li>
+                        <li><a href="#">New Arrivals</a></li>
+                        <li><a href="#">Best Sellers</a></li>
+                        <li><a href="seller.html">Seller Center</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Customer Service</h3>
+                    <ul>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Shipping Policy</a></li>
+                        <li><a href="#">Return Policy</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Stationery Avenue, Haidian District, Beijing</li>
+                        <li><i class="fas fa-phone"></i> 400-123-4567</li>
+                        <li><i class="fas fa-envelope"></i> contact@stationery.com</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri 9:00-18:00</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2026 Stationery Hub. All Rights Reserved. | Jing ICP No.12345678</p>
+            </div>
+        </div>
+    </footer>
+
+<script>
+    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+        const navLinks = document.querySelector('.nav-links');
+        const navIcons = document.querySelector('.nav-icons');
+        
+        if (navLinks.style.display === 'flex') {
+            navLinks.style.display = 'none';
+            navIcons.style.display = 'none';
+        } else {
+            navLinks.style.display = 'flex';
+            navIcons.style.display = 'flex';
+            navLinks.style.flexDirection = 'column';
+            navLinks.style.position = 'absolute';
+            navLinks.style.top = '100%';
+            navLinks.style.left = '0';
+            navLinks.style.width = '100%';
+            navLinks.style.backgroundColor = 'var(--white)';
+            navLinks.style.padding = '20px';
+            navLinks.style.boxShadow = '0 5px 10px rgba(0,0,0,0.1)';
+            
+            navIcons.style.position = 'absolute';
+            navIcons.style.top = 'calc(100% + 200px)';
+            navIcons.style.left = '0';
+            navIcons.style.width = '100%';
+            navIcons.style.justifyContent = 'center';
+            navIcons.style.backgroundColor = 'var(--white)';
+            navIcons.style.padding = '20px';
+        }
+    });
+
+    const searchForm = document.getElementById('searchForm');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const resultsTitle = document.getElementById('resultsTitle');
+
+    const API_URL = 'http://localhost/toolkit/search_products.php';
+
+
+    function showLoading() {
+        resultsContainer.innerHTML = `
+            <div class="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Searching database...</p>
+            </div>
+        `;
+    }
+
+
+    function showError(message) {
+        resultsContainer.innerHTML = `
+            <div class="error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>${message}</p>
+            </div>
+        `;
+    }
+
+    function renderResults(data) {
+        resultsTitle.textContent = `Search Results (${data.count})`;
+        resultsContainer.innerHTML = '';
+
+        if (data.count === 0) {
+            resultsContainer.innerHTML = `
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <p>No products found matching your criteria</p>
+                </div>
+            `;
+            return;
+        }
+
+        data.data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'result-card';
+            card.innerHTML = `
+                <div class="result-img">
+                    <i class="${item.icon || 'fas fa-box'}"></i>
+                </div>
+                <div class="result-info">
+                    <h3>${item.name}</h3>
+                    <p>${item.desc}</p>
+                    <div class="result-price">${item.price}</div>
+                </div>
+            `;
+            resultsContainer.appendChild(card);
+        });
+    }
+
+    searchForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const keyword = document.getElementById('searchKeyword').value.trim();
+        const category = document.getElementById('categoryFilter').value;
+
+        showLoading();
+
+        try {
+            const response = await fetch(`${API_URL}?keyword=${encodeURIComponent(keyword)}&category=${category}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const res = await response.json();
+
+            if (res.success) {
+                renderResults(res);
+            } else {
+                showError(res.message || 'Search failed');
+            }
+        } catch (error) {
+            console.error('Search error:', error);
+            showError('Failed to connect to server. Please check if the API address is correct.');
+        }
+    });
+</script>
+</body>
+</html>
